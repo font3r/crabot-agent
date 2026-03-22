@@ -1,37 +1,28 @@
+from pydantic import BaseModel
 from typing import Final
-from gateway_contracts import MessageEvent
 
 import aiohttp
 
 DISCORD_API_GATEWAY: Final = "https://discord.com/api/v10/"
 
-_token: str
+class MessageRequest(BaseModel):
+    content: str
 
+class DiscordRestClient:
+    def __init__(self, token: str):
+        self.token = token
+        self.session = aiohttp.ClientSession(base_url=DISCORD_API_GATEWAY)
 
-def init_rest_client(token: str):
-    global _token
-    _token = token
+    async def send_message(self, channel: str, messsage: str):
+        response = await self.session.post(
+            f"channels/{channel}/messages",
+            headers=self._get_http_headers(),
+            json=MessageRequest(content=messsage).model_dump(),
+        )
+        response.raise_for_status()
 
-
-def is_command(content: str) -> bool:
-    return content.startswith("!")
-
-
-async def handle_command(session: aiohttp.ClientSession, msg: MessageEvent):
-    if msg.content == "zjeb":
-        await send_message(session, msg.channel_id, "<@!269132306227265536>")
-    else:
-        await send_message(session, msg.channel_id, "invalid command")
-
-
-async def send_message(session: aiohttp.ClientSession, channel: str, messsage: str):
-    response = await session.post(
-        f"{DISCORD_API_GATEWAY}/channels/{channel}/messages",
-        headers={
-            "Authorization": f"Bot {_token}",
+    def _get_http_headers(self) -> dict[str, str]:
+        return {
+            "Authorization": f"Bot {self.token}",
             "User-Agent": "DiscordBot (crabot, 0.0.1)",
-        },
-        data={"content": messsage},
-    )
-
-    response.raise_for_status()
+        }

@@ -3,6 +3,7 @@ import os
 import aiohttp
 from typing import Final
 
+from command_handler import handle_command
 from gateway_contracts import (
     GatewayOpcode,
     GatewayPayload,
@@ -10,19 +11,20 @@ from gateway_contracts import (
     MessageEvent,
     ReadyEvent,
 )
-from rest_client import handle_command, init_rest_client, is_command
+from rest_client import DiscordRestClient
 
 DISCORD_GATEWAY: Final = "wss://gateway.discord.gg/?v=10&encoding=json"
 
 
 class DiscordGatewayClient:
-    def __init__(self, token: str):
+    def __init__(self, token: str, api_client: DiscordRestClient):
         self.token = token
         self.heartbeat_interval: int = 41250
         self.session_id: str | None = None
         self.sequence: int | None = None
         self.session: aiohttp.ClientSession
         self.ws: aiohttp.ClientWebSocketResponse | None = None
+        self.rest_client: DiscordRestClient = api_client
 
     async def connect(self):
         async with aiohttp.ClientSession() as session:
@@ -50,22 +52,16 @@ class DiscordGatewayClient:
             asyncio.create_task(self.heartbeat_loop())
             await self.identify()
 
-        elif payload.op == GatewayOpcode.HEARTBEAT_ACK:
-            print("[S->C=ACK] Heartbeat acknowledged")
 
         elif payload.op == GatewayOpcode.DISPATCH and payload.data:
             print(f"[S->C=EVENT] {payload.event_name}")
             if payload.event_name == "READY":
                 ready = ReadyEvent.from_payload(payload.data)
                 self.session_id = ready.session_id
-                print(f"[S->C=READY] Logged in as {ready.username}#{ready.discriminator}")
             elif payload.event_name == "MESSAGE_CREATE":
                 msg = MessageEvent.from_payload(payload.data)
                 print(f"[S->C=MSG] #{msg.channel_id} {msg.author_username}: {msg.content}")
-
-                if is_command(msg.content):
-                    msg.content = msg.content.strip("!")
-                    await handle_command(self.session, msg)
+                await handle_command(self.rest_client, msg)
 
         elif payload.op == GatewayOpcode.INVALID_SESSION:
             print("[ERROR] Invalid session — re-identifying...")
@@ -93,8 +89,7 @@ async def main():
     if token is None:
         raise ValueError("Missing bot token from env=DISCORD_BOT_TOKEN")
 
-    init_rest_client(token)
-    await DiscordGatewayClient(token).connect()
+    await DiscordGatewayClient(token, DiscordRestClient(token)).connect()
 
 
 if __name__ == "__main__":
