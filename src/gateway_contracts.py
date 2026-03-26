@@ -12,6 +12,7 @@ class GatewayOpcode(IntEnum):
     HELLO = 10
     HEARTBEAT_ACK = 11
 
+
 # TODO: migrate to pydantic
 @dataclass
 class GatewayPayload:
@@ -54,7 +55,7 @@ class MessageEvent:
             channel_id=d["channel_id"],
             content=d["content"],
             author_username=d["author"]["username"],
-            author_id=d["author"]["id"]
+            author_id=d["author"]["id"],
         )
 
 

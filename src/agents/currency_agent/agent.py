@@ -14,7 +14,7 @@ SYSTEM_INSTRUCTION = (
     "e.g. if user starts conversation with super loose tone, you can keep it like this"
 )
 
-root_agent = LlmAgent(
+currency_agent = LlmAgent(
     model="gemini-2.5-flash",
     name="currency_agent",
     description="An agent that can help with currency conversions",
