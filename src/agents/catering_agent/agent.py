@@ -32,5 +32,5 @@ catering_agent = LlmAgent(
         FunctionTool(get_order_details),
         FunctionTool(get_delivery_menu),
         FunctionTool(get_delivery_meal_alternatives),
-    ],
+    ]
 )

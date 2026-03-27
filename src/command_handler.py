@@ -1,4 +1,3 @@
-from datetime import date
 import datetime
 
 from google.adk import Runner
@@ -51,7 +50,7 @@ async def run_agent(user_id: str, prompt: str) -> str:
 
         return ""
     except _ResourceExhaustedError:
-        return "Gemini zapchane, kup premium biedaku"
+        return "Resource exhaused"
     except Exception as e:
         print(e)
-        return f"Coś się wyjebało aok"
+        return f"Something went wrong"

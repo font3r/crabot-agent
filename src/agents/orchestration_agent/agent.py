@@ -1,9 +1,12 @@
 import datetime
 
 from google.adk.agents import LlmAgent
-
-from agents.catering_agent.agent import catering_agent
-from agents.currency_agent.agent import currency_agent
+try:
+    from agents.catering_agent.agent import catering_agent
+    from agents.currency_agent.agent import currency_agent
+except ModuleNotFoundError:
+    from catering_agent.agent import catering_agent
+    from currency_agent.agent import currency_agent
 
 
 SYSTEM_INSTRUCTION = (
