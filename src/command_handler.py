@@ -1,4 +1,4 @@
-import datetime
+import logging
 
 from google.adk import Runner
 from google.adk.models.google_llm import _ResourceExhaustedError
@@ -8,6 +8,8 @@ from google.genai.types import Content, Part
 from gateway_contracts import MessageEvent
 from rest_client import DiscordRestClient
 from agents.orchestration_agent.agent import root_agent
+
+logger = logging.getLogger("crabot." + __name__)
 
 
 async def handle_command(client: DiscordRestClient, msg: MessageEvent):
@@ -58,5 +60,5 @@ async def run_agent(user_id: str, channel_id: str, prompt: str) -> str:
     except _ResourceExhaustedError:
         return "Resource exhaused"
     except Exception as e:
-        print(e)
+        logger.exception("error during communicating with model", e)
         return f"Something went wrong"
