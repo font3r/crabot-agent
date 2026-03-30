@@ -1,8 +1,11 @@
-# Discord agent for catering management
+## Discord assistant for catering management
 
-# running adk web locally
-
+running adk web locally
+```bash
 uv run --env-file .env adk web ./src/agents 
+```
 
-# running bot locally
+running bot locally
+```bash
 uv run ./src/main.py
+```
