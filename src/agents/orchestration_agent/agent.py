@@ -18,5 +18,5 @@ root_agent = LlmAgent(
     name="personal_assistant",
     description="An agent that can help with personal needs",
     instruction=SYSTEM_INSTRUCTION,
-    sub_agents=[catering_agent, currency_agent]
+    sub_agents=[catering_agent, currency_agent],
 )

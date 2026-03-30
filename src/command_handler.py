@@ -28,9 +28,7 @@ async def run_agent(user_id: str, channel_id: str, prompt: str) -> str:
     session_service = SqliteSessionService("./crabot_datastore.db")
 
     session = await session_service.get_session(
-        app_name="personal_assistant",
-        user_id=user_id,
-        session_id=channel_id
+        app_name="personal_assistant", user_id=user_id, session_id=channel_id
     )
 
     if session is None:

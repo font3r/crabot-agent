@@ -8,7 +8,8 @@ SYSTEM_INSTRUCTION = (
     "In your response, clearly state the meal ID and meal name you recommend.\n"
     "\n"
     "User meal preferences:\n"
-    "- user does not like shrimps"
+    "- user does not like shrimps\n"
+    "- user prefers shakes/juices for the second breakfast"
 )
 
 
@@ -26,5 +27,5 @@ diet_analyzer_agent = LlmAgent(
     name="diet_analyzer_agent",
     description="An agent that can analyze diet and suggest improvements based on user preferations",
     instruction=SYSTEM_INSTRUCTION,
-    input_schema=MealChangeListSchema
+    input_schema=MealChangeListSchema,
 )
