@@ -46,6 +46,7 @@ catering_agent = LlmAgent(
         FunctionTool(get_delivery_menu),
         FunctionTool(get_delivery_meal_alternatives),
         FunctionTool(switch_meal),
+        FunctionTool(cancel_delivery)
     ],
     sub_agents=[diet_analyzer_agent],
 )
